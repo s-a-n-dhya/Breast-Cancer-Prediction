@@ -1,0 +1,1 @@
+This project focuses on predicting whether a tumor is benign or malignant based on medical data using a Random Forest Classifier. The model is trained on the SEER Breast Cancer dataset, which includes various features like tumor size, stage, age, and hormone status.
