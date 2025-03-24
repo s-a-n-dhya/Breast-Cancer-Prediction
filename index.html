@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 28px;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            margin: 20px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        button {
+            width: 100%;
+            background: #ff5722;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #e64a19;
+        }
+
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        /* Animation */
+        form, h2 {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <h2>Breast Cancer Prediction</h2>
+    <form id="predictionForm">
+        <label>Regional Node Positive (Integer):</label> 
+        <input type="number" id="feature1" required>
+
+        <label>Survival Months (Integer):</label> 
+        <input type="number" id="feature2" required>
+
+        <label>Age (Integer, in years):</label> 
+        <input type="number" id="feature3" required>
+
+        <label>Unnamed: 3 (Float):</label> 
+        <input type="number" step="any" id="feature4" required>
+
+        <label>Tumor Size (Float, in mm):</label> 
+        <input type="number" step="any" id="feature5" required>
+
+        <label>Regional Node Examined (Integer):</label> 
+        <input type="number" id="feature6" required>
+
+        <label>Marital Status:</label>
+        <select id="feature7" required>
+            <option value="0">Single</option>
+            <option value="1">Married</option>
+        </select>
+
+        <label>6th Stage (Integer):</label> 
+        <input type="number" id="feature8" required>
+
+        <label>Grade (1-4):</label> 
+        <input type="number" min="1" max="4" id="feature9" required>
+
+        <label>T Stage (1-4):</label> 
+        <input type="number" min="1" max="4" id="feature10" required>
+
+        <label>Progesterone Status:</label>
+        <select id="feature11" required>
+            <option value="0">Negative</option>
+            <option value="1">Positive</option>
+        </select>
+
+        <label>N Stage (0-3):</label> 
+        <input type="number" min="0" max="3" id="feature12" required>
+
+        <label>Race:</label>
+        <select id="feature13" required>
+            <option value="1">White</option>
+            <option value="2">Black</option>
+            <option value="3">Asian</option>
+            <option value="4">Other</option>
+        </select>
+
+        <label>Estrogen Status:</label>
+        <select id="feature14" required>
+            <option value="0">Negative</option>
+            <option value="1">Positive</option>
+        </select>
+
+        <label>A Stage (1-4):</label> 
+        <input type="number" min="1" max="4" id="feature15" required>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <h3>Result: <span id="result">Waiting for input...</span></h3>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let inputArray = [
+                Number(document.getElementById("feature1").value),
+                Number(document.getElementById("feature2").value),
+                Number(document.getElementById("feature3").value),
+                Number(document.getElementById("feature4").value),
+                Number(document.getElementById("feature5").value),
+                Number(document.getElementById("feature6").value),
+                Number(document.getElementById("feature7").value),
+                Number(document.getElementById("feature8").value),
+                Number(document.getElementById("feature9").value),
+                Number(document.getElementById("feature10").value),
+                Number(document.getElementById("feature11").value),
+                Number(document.getElementById("feature12").value),
+                Number(document.getElementById("feature13").value),
+                Number(document.getElementById("feature14").value),
+                Number(document.getElementById("feature15").value)
+            ];
+
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ features: inputArray })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = `Prediction: ${data.prediction} (Benign: ${data.probability_benign.toFixed(2)}, Malignant: ${data.probability_malignant.toFixed(2)})`;
+            })
+            .catch(error => {
+                document.getElementById("result").innerText = "Error: " + error;
+            });
+        });
+    </script>
+</body>
+</html>
